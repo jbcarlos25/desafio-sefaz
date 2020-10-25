@@ -1,19 +1,16 @@
 package com.desafioSefaz.teste;
 
-
-
-
-
 import org.junit.FixMethodOrder;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import com.desafioSefaz.entities.Telefone;
 import com.desafioSefaz.entities.Usuario;
 import com.desafioSefaz.services.TelefoneServices;
 
 
-@FixMethodOrder
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TelefoneDaoTeste {
 
 	
