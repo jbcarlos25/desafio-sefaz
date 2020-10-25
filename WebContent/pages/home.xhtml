@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/templates/modeloSistema.xhtml">
+
+	<ui:define name="menu">
+		<ui:include src="/includes/barra.xhtml" />
+	</ui:define>
+
+	<ui:define name="conteudo">
+		<h:form id="frmusuarios">
+
+			<p:dataTable id="tbusuarios" widgetVar="tabelausuarios"
+				emptyMessage="Nenhum registro encontrado"
+				value="#{MBUsuarios.itens}" var="item"
+				filteredValue="#{MBUsuarios.itensFiltrados}" paginator="true"
+				rows="5">
+
+				<f:facet name="header">Lista de Usuários</f:facet>
+
+				<p:column headerText="Codigo" sortBy="#{item.id}"
+					filterBy="#{item.id}" style="width:50px">
+					<h:outputText value="#{item.id}" />
+				</p:column>
+
+				<p:column headerText="Nome" sortBy="#{item.nome}"
+					filterBy="#{item.nome}">
+					<h:outputText value="#{item.nome}" />
+				</p:column>
+				
+				<p:column headerText="Email" sortBy="#{item.email}"
+					filterBy="#{item.email}">
+					<h:outputText value="#{item.email}" />
+				</p:column>
+				
+				<p:column headerText="Telefone" style="width:300px">					
+					<p:dataList id="dtL" value="#{item.telefones}" var="vartel" type="definition">
+				        #{vartel.dd} , #{vartel.numero}, #{vartel.tipo}
+				    </p:dataList>
+				</p:column>
+				
+				
+				
+				<p:column style="width:40px">
+					<p:commandButton icon="ui-icon-trash"
+						oncomplete="PF('dlgusoExcluir').show();"
+						update=":frmusuarioExcluir:pnusoExcluir">
+						<f:setPropertyActionListener value="#{item}"
+							target="#{MBUsuarios.usuario}">
+						</f:setPropertyActionListener>
+					</p:commandButton>
+
+					<p:commandButton icon="ui-icon-pencil"
+					action="#{MBUsuarios.prepararTelEdit}"
+						oncomplete="PF('dlgusoEditar').show();"
+						update=":frmusuariosEditar">
+						<f:setPropertyActionListener value="#{item}"
+							target="#{MBUsuarios.usuario}">
+						</f:setPropertyActionListener>
+
+
+					</p:commandButton>
+				</p:column>
+
+				<f:facet name="footer">
+					<p:commandButton value="Novo"
+						actionListener="#{MBUsuarios.prepararNovoLista}"
+						oncomplete="PF('dlgusoNovo').show();"
+						update=":frmusuarioNovo:pnusoNovo" />
+				</f:facet>
+			</p:dataTable>
+		</h:form>
+
+		<p:dialog header="Novo Usuário" modal="true" appendTo="@(body)"
+			widgetVar="dlgusoNovo" closable="false" draggable="false"
+			resizable="false">
+			<h:form id="frmusuarioNovo">
+				<h:panelGrid id="pnusoNovo" columns="2">
+				
+					<p:outputLabel value="Nome" for="txtNomeNovo" />
+					<h:inputText id="txtNomeNovo" size="30" maxlegth="50"
+						value="#{MBUsuarios.usuario.nome}"
+						required ="true" requiredMessage ="O campo Nome é obrigatório" />
+						
+					<p:outputLabel value="Senha" for="txtSenhaNovo" />
+					<p:password id="txtSenhaNovo" size="30" maxlegth="50"
+						value="#{MBUsuarios.usuario.senha}"
+						required ="true" requiredMessage ="O campo Senha é obrigatório" />
+					
+					<p:outputLabel value="Email" for="txtEmailNovo" />
+					<h:inputText id="txtEmailNovo" size="30" maxlegth="50"
+						value="#{MBUsuarios.usuario.email}"
+						required ="true" requiredMessage ="O campo Email é obrigatório" />
+						</h:panelGrid>
+						
+					<h:panelGrid id="pnusoTelNovo" columns="2" style=" width:300px;
+       					 margin-bottom: 20px;">
+       					 
+       					 <p:outputLabel value="DD" for="txtddNovo" />
+					<h:inputText id="txtddNovo" size="1" maxlegth="1"
+						value="#{MBUsuarios.telefone.dd}" />
+						
+						 <p:outputLabel value="Numero" for="txtnumeroNovo" />
+					<h:inputText id="txtnumeroNovo" size="15" maxlegth="15"
+						value="#{MBUsuarios.telefone.numero}" />
+						
+						<p:outputLabel value="Tpo" for="txttipoNovo" />
+					<h:inputText id="txttipoNovo" size="15" maxlegth="15"
+						value="#{MBUsuarios.telefone.tipo}" />
+						
+						<p:commandButton value="Add Telefone"
+						actionListener="#{MBUsuarios.addTel}"
+						update=":frmusuarioNovo:dtL :msgGlobal" />
+						</h:panelGrid>
+						
+						<h:panelGrid id="pnusoTelTabNovo" columns="3" style=" width:300px;
+       					 margin-bottom: 20px;">
+       					 
+					 <p:dataList id="dtL" value="#{MBUsuarios.listaTel}" var="vartel" type="ordered">
+				        <f:facet name="header">
+				            Telefones
+				        </f:facet>
+				         #{vartel.numero}
+				    </p:dataList>
+		
+					
+
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar"
+						actionListener="#{MBUsuarios.novo}"
+						oncomplete="verificar(xhr, status, args, 'dlgusoNovo', 'tabelausuarios');"
+						update=":frmusuarios:tbusuarios :msgGlobal" />
+					<p:commandButton value="Cancelar"
+						process="@this"
+						onclick="PF('dlgusoNovo').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Excluir Usuario" modal="true" appendTo="@(body)"
+			widgetVar="dlgusoExcluir" closable="false" draggable="false"
+			resizable="false">
+			<h:form id="frmusuarioExcluir">
+				<h:panelGrid id="pnusoExcluir" columns="2">
+					<h:outputText value="Id" />
+					<h:outputText value="#{MBUsuarios.usuario.id}" />
+
+					<h:outputText value="Nome" />
+					<h:outputText value="#{MBUsuarios.usuario.nome}" />
+
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Excluir"
+						actionListener="#{MBUsuarios.excluir}"
+						oncomplete="PF('dlgusoExcluir').hide(); PF('tabelausuarios').clearFilters();"
+						update=":frmusuarios:tbusuarios :msgGlobal" />
+					<p:commandButton value="Cancelar"
+						onclick="PF('dlgusoExcluir').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Editar Usuário" modal="true" appendTo="@(body)"
+			widgetVar="dlgusoEditar" closable="false" draggable="false"
+			resizable="false">
+			<h:form id="frmusuariosEditar">
+				<h:panelGrid id="pnusoEditar" columns="2">
+					<h:outputText value="Id" />
+					<h:outputText value="#{MBUsuarios.usuario.id}" />
+
+					<h:outputText value="Nome" for="txtNomeEditar"/>
+					<h:inputText id="txtNomeEditar" value="#{MBUsuarios.usuario.nome}"
+					required ="true" requiredMessage ="O campo Nome é obrigatório" />
+					
+					<p:outputLabel value="Senha" for="txtSenhaNovo" />
+					<p:password id="txtSenhaNovo" size="30" maxlegth="50"
+						value="#{MBUsuarios.usuario.senha}"
+						required ="true" requiredMessage ="O campo Senha é obrigatório" />
+					
+					<p:outputLabel value="Email" for="txtEmailNovo" />
+					<h:inputText id="txtEmailNovo" size="30" maxlegth="50"
+						value="#{MBUsuarios.usuario.email}"
+						required ="true" requiredMessage ="O campo Email é obrigatório" />
+					</h:panelGrid>
+						
+					<h:panelGrid id="pnusoTelEdit" columns="2" style=" width:300px;
+       					 margin-bottom: 20px;">
+       					 
+       					 <p:outputLabel value="DD" for="txtddEdit" />
+					<h:inputText id="txtddEdit" size="1" maxlegth="1"
+						value="#{MBUsuarios.telefone.dd}" />
+						
+						 <p:outputLabel value="Numero" for="txtnumeroEdit" />
+					<h:inputText id="txtnumeroEdit" size="15" maxlegth="15"
+						value="#{MBUsuarios.telefone.numero}"/>
+						
+						<p:outputLabel value="Tpo" for="txttipoEdit" />
+					<h:inputText id="txttipoEdit" size="15" maxlegth="15"
+						value="#{MBUsuarios.telefone.tipo}"/>
+						
+						<p:commandButton value="Add Telefone"
+						actionListener="#{MBUsuarios.addTel2}"
+						update=":frmusuariosEditar:dtL :msgGlobal :frmusuariosEditar:pnusoTelEdit" />
+						
+						
+						<p:commandButton value="Remover Telefone"
+						actionListener="#{MBUsuarios.removeTel2}"
+						update=":frmusuariosEditar:dtL :msgGlobal :frmusuariosEditar:pnusoTelEdit" />
+						</h:panelGrid>
+						
+						<h:panelGrid id="pnusoTelTabEdit" columns="3" style=" width:300px;
+       					 margin-bottom: 20px;">
+       					 
+					 <p:dataList id="dtL" value="#{MBUsuarios.listaTel}" var="varteledit" type="ordered">
+				        <f:facet name="header">
+				            Telefones
+				        </f:facet>
+				         #{varteledit.numero}
+				    </p:dataList>
+		
+					
+
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar"
+						actionListener="#{MBUsuarios.editar}"
+						oncomplete="verificar(xhr, status, args, 'dlgusoEditar', 'tabelausuarios');"
+						update=":frmusuarios:tbusuarios :msgGlobal" />
+					<p:commandButton value="Cancelar"
+						process="@this"
+						onclick="PF('dlgusoEditar').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>

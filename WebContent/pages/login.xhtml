@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/templates/modeloSistema.xhtml">
+
+<ui:define name="menu">
+<ui:include src=""/>
+</ui:define>
+
+<ui:define name="conteudo">
+<p:dialog widgetVar="dlLogin" modal="true" visible="true" appendTo="@(body)" width="400" height="200" header="Acessar o Sistema" showHeader="false" resizable="false">
+<h:form id="formLogin" >
+                <h:panelGrid id="pnLogin" cellspacing="10">
+                    Digite seu usuário e senha para ter acesso ao sistema:                    
+                    <p:messages id="messagesLogin"/>
+                    <p:inputText placeholder="Usuário" value="#{MBUsuarios.usuario.nome}" size="40" required="true" requiredMessage="Campo Usuário é obrigatório"/>
+                     <p:password placeholder="Senha" value="#{MBUsuarios.usuario.senha}" size="40" required="true" requiredMessage="Campo Senha é obrigatório"/>
+                     <p:commandButton value="Log In" oncomplete="#{MBUsuarios.prepararNovo()}" action="#{MBUsuarios.logIn()}" update=":msgGlobal" />
+                </h:panelGrid>
+            </h:form>
+           </p:dialog>
+</ui:define>
+
+</ui:composition>
