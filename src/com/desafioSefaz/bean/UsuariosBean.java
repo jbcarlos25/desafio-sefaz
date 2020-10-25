@@ -81,7 +81,7 @@ public class UsuariosBean implements Serializable {
 				.filter(c -> c.getNome().toUpperCase().equals(usuario.getNome().toUpperCase().toString()))
 				.collect(Collectors.toList());
 		if (userTempf.isEmpty()) {
-			JSFUtil.addMsgErrorNome("Usuário não cadastrado!");
+			JSFUtil.addMsgErrorNome("Usuï¿½rio nï¿½o cadastrado!");
 		} else {
 			Usuario acesso = userTempf.get(0);
 			if (acesso != null && acesso.getSenha().equals(JSFUtil.MD5(usuario.getSenha().toString()))) {
