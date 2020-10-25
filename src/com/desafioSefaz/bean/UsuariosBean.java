@@ -84,8 +84,6 @@ public class UsuariosBean implements Serializable {
 			JSFUtil.addMsgErrorNome("Usu�rio n�o cadastrado!");
 		} else {
 			Usuario acesso = userTempf.get(0);
-			System.out.println(acesso.getSenha());
-			System.out.println(usuario.getSenha());
 			if (acesso != null && acesso.getSenha().equals(JSFUtil.MD5(usuario.getSenha().toString()))) {
 				HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext()
 						.getSession(false);
