@@ -75,7 +75,7 @@ public class UsuariosBean implements Serializable {
 		List<Usuario> listLogin = servicesUso.findAll();
 		Usuario admin = new Usuario();
 		admin.setNome("admin");
-		admin.setSenha("admin");
+		admin.setSenha(JSFUtil.MD5("admin"));
 		listLogin.add(admin);
 		List<Usuario> userTempf = listLogin.stream()
 				.filter(c -> c.getNome().toUpperCase().equals(usuario.getNome().toUpperCase().toString()))
@@ -84,6 +84,8 @@ public class UsuariosBean implements Serializable {
 			JSFUtil.addMsgErrorNome("Usu�rio n�o cadastrado!");
 		} else {
 			Usuario acesso = userTempf.get(0);
+			System.out.println(acesso.getSenha());
+			System.out.println(usuario.getSenha());
 			if (acesso != null && acesso.getSenha().equals(JSFUtil.MD5(usuario.getSenha().toString()))) {
 				HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext()
 						.getSession(false);
